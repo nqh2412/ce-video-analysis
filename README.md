@@ -1,3 +1,3 @@
 # ce-video-analysis
-Mobile version: http://nanobiomems.khu.ac.kr/CE /n
-PC version: http://nanobiomems.khu.ac.kr/CE/pc
+1. Mobile version: http://nanobiomems.khu.ac.kr/CE
+2. PC version: http://nanobiomems.khu.ac.kr/CE/pc
