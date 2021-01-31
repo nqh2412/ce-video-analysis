@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width = device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>CE analysis v1.01 - by Nguyen Quoc Huynh</title>
+    <style>
+      body {
+        text-align: center;
+        background-color: #e8e8e8;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      h2 {
+        text-align: center;
+        color: #000003;
+        font-family: Arial, Helvetica, sans-serif;
+        height: 10px;
+      }
+      .buttom {
+        font-size: medium;
+        border: 2px solid #00185cc4;
+        display: inline-block;
+        padding: 0.1rem 0.1rem;
+        align-content: center;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        color: #444;
+        font-size: 1rem;
+        font-weight: 300;
+        transition: all 0.2s;
+        font-family: Arial, Helvetica, sans-serif;
+        width: 15rem;
+        background-color: rgb(255, 255, 255);
+        backdrop-filter: blur(10px);
+
+        padding: 0.1rem 0.6rem;
+        border-radius: 50rem;
+        box-shadow: 0 1.75rem 3.5rem #0000001a;
+      }
+      .hidden {
+        display: none;
+      }
+      .canvas {
+        border-radius: 0.5rem;
+        padding: 0rem 0rem;
+      }
+      .container{
+         margin: auto;
+          width: 300px;
+          text-align: center;
+          display: grid;
+         grid-template-columns: 70px auto;
+      }
+      .btn-play{
+        color: rgb(255, 255, 255);
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 0.75rem;
+        border: 2px solid rgb(255, 255, 255);
+        background-color: #00185cc4;
+        backdrop-filter: blur(10px);
+        border-radius: 50rem;
+        box-shadow: 0 1.75rem 3.5rem rgba(65, 47, 47, 0.1);
+        padding: 0.5rem 1rem;
+}
+      .numb{
+        border-radius: 40rem;
+        text-align: center;
+        border: 1px solid #00195c78;
+
+
+      }
+    </style>
+  </head>
+  <body>
+    <h2>CE analysis</h2>
+        <p align="center">Integrative
+      <a href="http://nanobiomems.khu.ac.kr/" style="color: #002f64">
+        NanoBioMEMS</a >
+    </p>
+    <input type="file" accept="video/*" class="buttom" />
+
+      <br />
+      <input name="Video" type="submit" onClick="reloadRandomFrame()" value="Frames"class="hidden"
+      />
+      <script
+        type="text/javascript"
+        src="https://www.gstatic.com/charts/loader.js"
+      ></script>
+    </p>
+    <div class="container"> 
+        <div class = "container2 hidden" align = "center">
+         <strong>Zoom</strong>  <br>
+          Top x <br>  <input type="number" min="0" max="100" value="50" class="numb" id="xCor" ><br>
+          Top y <br> <input type="number" min="0" max="100" value="42" class="numb" id="yCor"><br>
+          In <br> <input type="number" min="0" max="100" value="1" class="numb" id="siZe"><br>
+          <input
+          name="again"
+          type="submit"
+          onClick="again()"
+          value="Reload"
+          class="btn-play"
+          />
+        </div>
+        <div>
+          <canvas id="prevImgCanvas" class="canvas"
+          >Your browser does not support the HTML5 canvas tag.</canvas>
+          <div class="progress" style="font-size: 12px" align = "center" ></div>
+        </div>
+    </div>
+    <script>
+ let sliderX = document.getElementById("xCor");
+ let sliderY = document.getElementById("yCor");
+ let sliderS = document.getElementById("siZe");
+
+x = sliderX.value/100;
+    sliderX.oninput = function() {x = this.value/100;}
+y = sliderY.value/100;
+    sliderY.oninput = function() {y = this.value/100;}
+s = sliderS.value/100;
+    sliderS.oninput = function() {s = this.value/100;}
+
+console.log(x, y,s)
+
+let data2 = [];
+let time = 0;
+let t1 = [];
+// Reload function
+function reloadRandomFrame() {
+        if (time <= video.duration) {
+          time += 1;
+          video.currentTime = time;
+          console.log(video.currentTime);
+          document.querySelector(".progress").textContent = `Seconds: ${time}/${Math.round(video.duration +1)}`;
+        }
+      }
+function again(){
+  data2 = [];
+  time = -1;
+  t1 = [];
+  }
+  let video = document.createElement("video");
+      // Make the canvas
+  let canvas = document.getElementById("prevImgCanvas");
+      canvas.width = "220";
+      canvas.height = "180";
+
+      // When video is loaded
+  let btn = document.querySelector("[name='Video']");
+    setInterval(function () {
+      btn.click();
+    }, 350);
+
+  video.addEventListener(
+   "loadeddata",
+    function () {
+    document.querySelector(".container2").classList.remove('hidden')
+    data2 = [];
+    time = -1;
+    t1 = [];
+    reloadRandomFrame();
+    },
+    false);
+//When click the next frame buttom
+  video.addEventListener(
+    "seeked",
+    function () {
+    let context = canvas.getContext("2d");
+    context.drawImage(video,
+    video.videoWidth*x,video.videoHeight*y,video.videoWidth*s,video.videoHeight*s,
+    0, 0, canvas.width, canvas.height);
+    let data = context.getImageData(0,0,canvas.width,canvas.height).data;
+    data2.push(data[1] / 255);
+
+    console.log(data2);
+    google.charts.load("current", { packages: ["corechart", "line"] });
+    google.charts.setOnLoadCallback(drawBackgroundColor);
+    function drawBackgroundColor() {
+            let data = new google.visualization.DataTable();
+            data.addColumn("number", "");
+            data.addColumn("number", "Intensities");
+
+            t1 = Array.from(Array(data2.length).keys());
+            for (let i = 0; i <= t1.length; i++) {
+              let row = [t1[i], data2[i]];
+              data.addRow(row);
+            }
+
+            let options = {
+              title: "Fluoresent intensities vs time",
+              titlePosition: "out",
+              curveType: "function",
+            //   colors: ["#000000"],
+              hAxis: {
+                title: "Seconds",
+              },
+              vAxis: {
+                title: "Fluorescent Intensities",
+                viewWindow: {
+                //max: 8000,
+                min: 0}
+              },
+              backgroundColor: "none",
+              width: 300,
+              height: 260,
+              chartArea: {
+                top: 30,
+                left: 40,
+                right: 10,
+                bottom: 30,
+                width: "70%",
+                height: "90%",
+              },
+            };
+
+            let chart = new google.visualization.LineChart(
+              document.getElementById("chart_div")
+            );
+            chart.draw(data, options);
+          }
+        },
+        false
+      );
+      // ??
+      let playSelectedFile = function (event) {
+        let file = this.files[0];
+        let fileURL = URL.createObjectURL(file);
+        video.src = fileURL;
+      };
+      // ??
+      let input = document.querySelector("input");
+      input.addEventListener("change", playSelectedFile, false);
+
+     
+
+    </script>
+    <div id="chart_div" align="center"></div>
+  </body>
+</html>
