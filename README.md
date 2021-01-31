@@ -4,6 +4,6 @@
   2. PC version: http://nanobiomems.khu.ac.kr/CE/pc
 
 ## II. Load the sample-video.mp4 
-[](/demo.png)
+![](/demo.png)
  
-[Screenshot](/screenshot.png)
+![Screenshot](/screenshot.png)
