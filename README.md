@@ -7,3 +7,6 @@
 ![](/demo.png)
  
 ![Screenshot](/screenshot.png)
+
+More details
+http://biomems.io/smartphone-based-capillary-electrophoresis-data-analysis/
